@@ -93,3 +93,23 @@ elPrimeroQueCumpla condicion (unValor : restoDeValores)
 nuevaChica :: Chica
 nuevaChica = Chica "nuevaChica" [tieneHabilidad "cocinar"]
 
+--Da Rules:
+--Punto 1:
+
+infractoresDaRules :: [Chico] -> [Chico]
+infractoresDaRules = filter tieneDeseosProhibidos
+
+tieneDeseosProhibidos :: Chico -> Bool
+tieneDeseosProhibidos unChico = (algunoEsProhibido unChico . deseos) unChico
+
+habilidadesProhibidas :: [Habilidad]
+habilidadesProhibidas = ["matar", "enamorar", "dominar el mundo"]
+
+algunoEsProhibido :: Chico -> [Deseo] -> Bool
+algunoEsProhibido unChico = any (esProhibido unChico)
+
+esProhibido :: Chico -> Deseo -> Bool
+esProhibido unChico unDeseo = any (flip tieneHabilidad ((dejarSoloLasPrimerasCincoHabilidades. cumplirDeseo unChico) unDeseo)) habilidadesProhibidas
+
+dejarSoloLasPrimerasCincoHabilidades :: Chico -> Chico
+dejarSoloLasPrimerasCincoHabilidades = mapearHabilidades (take 5)
