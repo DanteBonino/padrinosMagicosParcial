@@ -60,3 +60,36 @@ muffinMagico unChico = foldl (cumplirDeseo) unChico (deseos unChico)
 
 cumplirDeseo :: Chico -> Deseo -> Chico
 cumplirDeseo  = flip ($)
+
+--En busca de pareja
+
+--Punto 1:
+--a
+tieneHabilidad :: Habilidad -> Chico -> Bool
+tieneHabilidad unaHabilidad = (elem unaHabilidad . habilidades)
+--b
+esSuperMaduro :: Chico -> Bool
+esSuperMaduro unChico = tieneHabilidad "manejar" unChico && esMayor unChico
+
+esMayor :: Chico -> Bool
+esMayor = ((>18) . edad)
+
+--Punto 2:
+data Chica = Chica{
+    nombreChica :: String,
+    condicion   :: Chico -> Bool
+}
+--a
+quienConquistaA :: Chica -> [Chico] -> Chico
+quienConquistaA unaChica  = elPrimeroQueCumpla (condicion unaChica)
+
+elPrimeroQueCumpla :: (a -> Bool) -> [a] -> a
+elPrimeroQueCumpla _ [unValor] = unValor
+elPrimeroQueCumpla condicion (unValor : restoDeValores)
+    | condicion unValor = unValor
+    | otherwise         = elPrimeroQueCumpla condicion restoDeValores
+    
+--b
+nuevaChica :: Chica
+nuevaChica = Chica "nuevaChica" [tieneHabilidad "cocinar"]
+
